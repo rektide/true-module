@@ -7,7 +7,7 @@
 		"example": "example"
 	},
 	"scripts": {
-		"test": "node example/basic-foo-1.js"
+		"test": "cd example;node basic-foo-1.js"
 	},
 	"author": "",
 	"license": "Xorg",
