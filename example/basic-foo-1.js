@@ -11,9 +11,7 @@ var require= require("../true-module")(module)
 // monkey patch "map" onto Q
 function map(fn){
 	return function(then){
-		var val= then.map(fn)
-		console.log("m",util.inspect(then),util.inspect(val),fn)
-		return Q.all(val)
+		return Q.all(then.map(fn))
 	}
 }
 (function(){
@@ -24,7 +22,7 @@ function map(fn){
 })()
 
 // spit out errors
-//process.on("uncaughtException",console.log.bind(console))
+process.on("uncaughtException",console.log)
 
 //// PREP TESTS
 
@@ -45,31 +43,35 @@ function addOut(i){
 	return i+".out"
 }
 var outFilenames= jsFilenames.map(addOut)
-//outFilenames.then(function(t){console.log("t",t)})
 
 
 //// EXECUTE
 
-// resolve files
-var jss= jsFilenames.map(require)
-//jss.then(function(a){console.log("a",util.inspect(a))})
-//jss.fail(console.log.bind(console))
+// resolve modules by true-module
 
-var outs= outFilenames.map(io.read.bind(io)).map(JSON.parse)
-//outs.then(function(b){console.log("b",util.inspect(b))})
-//outs.fail(console.log.bind(console))
+var jss= jsFilenames.map(require)
+jss.fail(console.log)
+
+// and resolve expected-outputs by read/eval
+function readSync(n){
+	return io.read(n)
+}
+function evalSync(n){
+	return eval("("+n+")")
+}
+var outs= outFilenames.map(readSync).map(evalSync)
+outs.fail(console.log)
 
 
 // CHECK RESULTS
 
 // check results
-Q.all([jss,outs]).then(function(a,b){
-	console.log("have-a",a)
-	console.log("have-b",b)
+var ok= Q.spread([jss,outs],function(a,b){
+	//console.log("have",a,b)
 	a.map(function(got,i){
 		var expected= b[i]
-		if(got != b[i])
-			throw "Unexpected "+got+" found in input "+jsFilenames[i]+"; expected: "+expected
-		console.log("ok ",val)
+		assert(got,expected)
 	})
+	console.log(a)
 })
+ok.fail(console.log)

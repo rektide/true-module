@@ -15,16 +15,9 @@ module.exports= function(module){
 	function TrueModule(name){
 		var self= this==global?TrueModule:this,
 		  val
-		try{
-			var filename= self.resolver(name)
-			var contents= self.read(filename)
-			console.log("%",filename,contents)
-			val= self.eval(contents)
-			console.log("%",filename,contents,val)
-		}catch(ex){
-			console.log("death",ex)
-			throw ex
-		}
+		var filename= self.resolver(name)
+		var contents= self.read(filename)
+		val= self.eval(contents)
 		return val
 	}
 	TrueModule.basedir= path.dirname(module.filename)
