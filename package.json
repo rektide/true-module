@@ -1,0 +1,21 @@
+{
+	"name": "true-module",
+	"version": "0.9.0",
+	"description": "True Module concept project imagines a genuine JavaScript object notation defining modules.",
+	"main": "true-module.js",
+	"directories": {
+		"example": "example"
+	},
+	"scripts": {
+		"test": "node example/basic-foo-1.js"
+	},
+	"author": "",
+	"license": "Xorg",
+	"dependencies": {
+		"resolve": "~0.6.1"
+	},
+	"devDependencies": {
+		"q": "~0.9",
+		"q-io": "~1.10"
+	}
+}
